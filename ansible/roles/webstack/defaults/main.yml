@@ -1,0 +1,10 @@
+---
+site_title: "Edge Web"
+site_subtitle: "Automatización con Ansible"
+accent_color: "#0047AB"
+footer_message: "Sitio generado automáticamente"
+content_paragraphs: []
+web_packages:
+  - apache2
+  - curl
+  - python3

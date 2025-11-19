@@ -1,0 +1,45 @@
+---
+- name: Provision edge web tier
+  hosts: web
+  become: true
+  gather_facts: true
+  vars_files:
+    - inventories/dev/group_vars/web.yml
+
+  pre_tasks:
+    - name: Ensure aptitude cache is fresh
+      ansible.builtin.apt:
+        update_cache: true
+      changed_when: false
+      tags: always
+
+    - name: Confirm remote SSH reachability
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host | default(inventory_hostname) }}"
+        port: "{{ ansible_port | default(22) }}"
+        delay: 0
+        timeout: 30
+      delegate_to: localhost
+      run_once: false
+
+  roles:
+    - role: webstack
+
+  post_tasks:
+    - name: Validate site content
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host | default(inventory_hostname) }}/"
+        return_content: true
+        status_code: 200
+      register: site_check
+      retries: 3
+      delay: 5
+      until: site_check.status == 200
+
+    - name: Assert footer includes author info
+      ansible.builtin.assert:
+        that:
+          - '"2020-9643" in site_check.content'
+          - 'site_title in site_check.content'
+        fail_msg: "La página no muestra la autoría esperada"
+        success_msg: "Página servida correctamente con autoría visible"

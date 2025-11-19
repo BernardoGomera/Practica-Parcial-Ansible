@@ -1,0 +1,13 @@
+site_title: "Constelación Web"
+site_subtitle: "Automatizado con Ansible por Bernardo Gomera (2020-9643)"
+accent_color: "#6633ff"
+footer_message: "Infraestructura educativa – Bernardo Gomera – Matrícula 2020-9643"
+content_paragraphs:
+  - "Esta granja de servidores fue desplegada automáticamente usando Ansible y Docker Compose."
+  - "Cada nodo expone métricas y verificaciones de salud para validar el estado del servicio."
+web_packages:
+  - apache2
+  - htop
+  - unzip
+  - rsync
+  - python3-pip

@@ -1,0 +1,3 @@
+Bienvenido a la constelación web automatizada por Ansible.
+Responsable: Bernardo Gomera (2020-9643)
+Revise /var/log/apache2 para inspeccionar los accesos.

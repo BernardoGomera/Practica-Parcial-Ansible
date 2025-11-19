@@ -1,0 +1,22 @@
+---
+- name: Configurar servidores web con Ansible
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Instalar Apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Crear página HTML
+      copy:
+        dest: /var/www/html/index.html
+        content: "<h1>Hola desde Ansible en {{ inventory_hostname }}</h1>"
+
+    - name: Iniciar servicio Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes

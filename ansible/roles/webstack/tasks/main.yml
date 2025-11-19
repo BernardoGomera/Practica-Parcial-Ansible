@@ -1,0 +1,44 @@
+---
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ web_packages }}"
+    state: present
+    update_cache: true
+  tags: packages
+
+- name: Enable Apache status module
+  ansible.builtin.command: a2enmod status
+  args:
+    creates: /etc/apache2/mods-enabled/status.load
+  notify: restart apache
+
+- name: Drop custom MOTD
+  ansible.builtin.copy:
+    src: motd
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy site index
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart apache
+
+- name: Publish health probe file
+  ansible.builtin.copy:
+    dest: /var/www/html/healthz
+    content: "OK {{ ansible_date_time.iso8601 }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Apache is running
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true

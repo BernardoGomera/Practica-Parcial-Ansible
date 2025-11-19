@@ -1,0 +1,41 @@
+services:
+  quasar-app:
+    build: ./docker
+    container_name: quasar-app
+    hostname: quasar-app
+    ports:
+      - "8085:80"
+      - "2225:22"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - web_logs:/var/log/apache2
+    networks:
+      - edge_net
+
+  nebula-app:
+    build: ./docker
+    container_name: nebula-app
+    hostname: nebula-app
+    ports:
+      - "8095:80"
+      - "2235:22"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - web_logs:/var/log/apache2
+    networks:
+      - edge_net
+
+volumes:
+  web_logs:
+
+networks:
+  edge_net:
+    driver: bridge

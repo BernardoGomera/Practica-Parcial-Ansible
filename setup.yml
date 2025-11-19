@@ -1,0 +1,3 @@
+---
+- name: Entrypoint playbook (root)
+  import_playbook: ansible/site.yml
